@@ -23,10 +23,22 @@ export interface UseSidebarOptions<
   hoverCloseDelay?: number;
 }
 
+export interface UseSidebarReturn<
+  StateName extends string = 'hidden' | 'mini' | 'full',
+> {
+  layoutState: StateName;
+  states: Record<StateName, boolean>;
+  isOpen: boolean;
+  isVisible: boolean;
+  toggle: (next?: boolean) => void;
+}
+
 export function useSidebar<
   StateName extends string = 'hidden' | 'mini' | 'full',
   InitialOpen extends boolean = false,
->(options: UseSidebarOptions<StateName, InitialOpen>) {
+>(
+  options: UseSidebarOptions<StateName, InitialOpen>,
+): UseSidebarReturn<StateName> {
   const {
     containerRef,
     sidebarRef,
