@@ -1,0 +1,27 @@
+.page {
+  height: 50rem;
+  max-width: 80rem;
+  border: 1px solid #cdcdcd;
+  border-radius: 8px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  max-width: 48rem;
+  width: 100%;
+  margin: 0 auto;
+}
+
+@media screen and (min-width: 768px) {
+  .page {
+    padding-left: 3.75rem;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .page {
+    padding-left: 15.625rem;
+  }
+}
