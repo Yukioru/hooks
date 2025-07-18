@@ -8,6 +8,8 @@
   box-shadow: inset -1px 0 0 0 #cdcdcd;
   transition: transform 0.2s ease-out;
   transform: translateX(-100%);
+  display: flex;
+  box-sizing: border-box;
 }
 
 .sidebar.mini {
@@ -18,4 +20,22 @@
 .sidebar.open {
   width: 250px;
   transform: translateX(0);
+}
+
+.content {
+  width: 100%;
+}
+
+.content.mini {
+  width: 60px;
+}
+
+.addons {
+  flex-shrink: 0;
+  box-sizing: border-box;
+  flex: 1;
+}
+
+.addons.hidden {
+  display: none;
 }

@@ -21,12 +21,14 @@ export interface UseSidebarOptions<
   closeOnOutsideClick?: boolean;
   hoverOpenDelay?: number;
   hoverCloseDelay?: number;
+  hasAddons?: boolean;
 }
 
 export interface UseSidebarReturn<
   StateName extends string = 'hidden' | 'mini' | 'full',
 > {
   layoutState: StateName;
+  contentLayoutState: StateName;
   states: Record<StateName, boolean>;
   isOpen: boolean;
   isVisible: boolean;
@@ -49,6 +51,8 @@ export function useSidebar<
     closeOnOutsideClick = false,
     hoverOpenDelay = 0,
     hoverCloseDelay = 0,
+
+    hasAddons = false,
   } = options;
 
   const sortedEntries = useMemo(
@@ -88,6 +92,11 @@ export function useSidebar<
     return curr;
   }, [states, sortedEntries]);
 
+  const miniKey = useMemo(() => {
+    const found = sortedEntries.find(([key]) => key === 'mini');
+    return found ? found[0] : sortedEntries[0][0];
+  }, [sortedEntries]);
+
   useEffect(() => {
     onStateChange?.(layoutState);
   }, [layoutState, onStateChange]);
@@ -96,6 +105,17 @@ export function useSidebar<
   const toggle = useCallback((next?: boolean) => {
     setIsOpen((prev) => (typeof next === 'boolean' ? next : !prev));
   }, []);
+
+  const contentLayoutState = useMemo((): StateName => {
+    if (!hasAddons) return layoutState;
+    if (isOpen && layoutState === sortedEntries[0][0]) {
+      return miniKey;
+    }
+    const idx = sortedEntries.findIndex(([key]) => key === layoutState);
+    const miniIdx = sortedEntries.findIndex(([key]) => key === miniKey);
+    if (idx < miniIdx) return layoutState;
+    return miniKey;
+  }, [hasAddons, layoutState, isOpen, sortedEntries, miniKey]);
 
   useEffect(() => {
     if (layoutState === 'mini') setIsOpen(false);
@@ -144,11 +164,21 @@ export function useSidebar<
   return useMemo(
     () => ({
       layoutState,
+      contentLayoutState,
       states,
       isOpen,
       isVisible,
+      hasAddons,
       toggle,
     }),
-    [layoutState, states, isOpen, isVisible, toggle],
+    [
+      layoutState,
+      contentLayoutState,
+      states,
+      isOpen,
+      isVisible,
+      hasAddons,
+      toggle,
+    ],
   );
 }
