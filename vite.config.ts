@@ -8,7 +8,7 @@ export default defineConfig({
     lib: {
       entry: 'src/index.ts',
       name: '@yukioru/hooks',
-      fileName: 'index.js',
+      fileName: 'index',
       formats: ['es'],
     },
     rollupOptions: {
