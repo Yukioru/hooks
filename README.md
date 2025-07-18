@@ -9,11 +9,11 @@ A collection of powerful and flexible React hooks for UI development. Includes:
 ## Installation
 
 ```bash
-npm install @yukioru/hooks
+npm install @yukioru/hooks react react-dom
 # or
-yarn add @yukioru/hooks
+yarn add @yukioru/hooks react react-dom
 # or
-bun add @yukioru/hooks
+bun add @yukioru/hooks react react-dom
 ```
 
 ## Usage Example
