@@ -1,69 +1,153 @@
-# React + TypeScript + Vite
+# @yukioru/hooks
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A collection of powerful and flexible React hooks for UI development. Includes:
 
-Currently, two official plugins are available:
+- `useSidebar` — advanced sidebar state and behavior management
+- `useClickOutside` — handle clicks outside elements, with exclusions and ESC support
+- `useContainerWidth` — responsive container width and breakpoints
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Installation
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install @yukioru/hooks
+# or
+yarn add @yukioru/hooks
+# or
+bun add @yukioru/hooks
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Usage Example
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```tsx
+import { useSidebar, useClickOutside, useContainerWidth } from '@yukioru/hooks';
 ```
+
+---
+
+## API Reference
+
+### useSidebar
+
+Manages sidebar open/close state, breakpoints, and advanced behaviors (hover, outside click, etc).
+
+**Signature:**
+
+```ts
+function useSidebar<
+  StateName extends string = 'hidden' | 'mini' | 'full',
+  InitialOpen extends boolean = false,
+>(
+  options: UseSidebarOptions<StateName, InitialOpen>,
+): UseSidebarReturn<StateName>;
+```
+
+**Options:**
+
+- `containerRef?`: Ref to the container element
+- `sidebarRef`: Ref to the sidebar element (**required**)
+- `breakpoints`: Record of state name to min width (e.g. `{ mini: 600, full: 1200 }`)
+- `initialOpen?`: Whether sidebar is open by default
+- `onStateChange?`: Callback when state changes
+- `onVisibilityChange?`: Callback when visibility changes
+- `closeOnOutsideClick?`: Close sidebar on outside click
+- `hoverOpenDelay?`, `hoverCloseDelay?`: Delays for hover open/close
+- `hasAddons?`: Whether sidebar has additional content
+
+**Returns:**
+
+- `layoutState`: Current sidebar state name
+- `contentLayoutState`: State for content area
+- `states`: Object with boolean for each state
+- `isOpen`: Is sidebar open
+- `isVisible`: Is sidebar visible
+- `toggle(next?)`: Toggle sidebar open/close
+
+**Example:**
+
+```tsx
+const sidebarRef = useRef(null);
+const { layoutState, isOpen, toggle } = useSidebar({
+  sidebarRef,
+  breakpoints: { hidden: 0, mini: 600, full: 1200 },
+  initialOpen: true,
+  closeOnOutsideClick: true,
+});
+```
+
+---
+
+### useClickOutside
+
+Detects clicks outside a given element (or elements), with support for exclusions and ESC key.
+
+**Signature:**
+
+```ts
+function useClickOutside(
+  refs: RefObject<HTMLElement> | RefObject<HTMLElement>[],
+  handler: (event: Event) => void,
+  options?: UseClickOutsideOptions,
+): void;
+```
+
+**Options:**
+
+- `excludeRefs?`: Array of refs to ignore
+- `disabled?`: Disable the hook
+- `passive?`: Use passive event listeners (default: true)
+- `capture?`: Use capture phase
+- `handleEsc?`: Handle ESC key (default: true)
+- `containerRef?`: Attach listeners to a specific container
+
+**Example:**
+
+```tsx
+const ref = useRef(null);
+useClickOutside(ref, () => setOpen(false));
+```
+
+---
+
+### useContainerWidth
+
+Tracks the width of a container (or window) and provides responsive breakpoints.
+
+**Signature:**
+
+```ts
+// Returns width as number
+function useContainerWidth(options?: {
+  ref?: RefObject<HTMLElement>;
+  initialWidth?: number | null;
+}): number;
+
+// Returns breakpoint state
+function useContainerWidth<const BP extends readonly number[]>(options: {
+  ref?: RefObject<HTMLElement>;
+  breakpoints: BP;
+  initialWidth?: number | null;
+}): { [K in BP[number]]: boolean };
+```
+
+**Options:**
+
+- `ref?`: Ref to the container element (default: window)
+- `initialWidth?`: Initial width (for SSR)
+- `breakpoints?`: Array of numbers for breakpoints
+
+**Example:**
+
+```tsx
+const width = useContainerWidth();
+// or
+const bp = useContainerWidth({ breakpoints: [600, 1200] });
+if (bp[600]) {
+  /* >= 600px */
+}
+```
+
+---
+
+## License
+
+MIT

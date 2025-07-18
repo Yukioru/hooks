@@ -1,9 +1,21 @@
 {
   "name": "@yukioru/hooks",
-  "private": true,
-  "version": "0.0.1",
+  "version": "1.0.0",
   "type": "module",
-  "module": "dist/hooks.es.js",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "homepage": "https://github.com/Yukioru/hooks#readme",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Yukioru/hooks.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
