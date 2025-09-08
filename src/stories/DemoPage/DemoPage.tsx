@@ -2,8 +2,11 @@ import styles from './DemoPage.module.css';
 import { DemoSidebar } from '../DemoSidebar';
 import { useRef, useState, type ReactNode } from 'react';
 import { type DemoSidebarRef } from '../DemoSidebar/DemoSidebar';
+import type { UseSidebarOptions } from '../../useSidebar';
 
-export function DemoPage() {
+export interface DemoPageProps extends Omit<UseSidebarOptions, 'sidebarRef'> {}
+
+export function DemoPage(props: DemoPageProps) {
   const sidebarRef = useRef<DemoSidebarRef | null>(null);
   const [content, setContent] = useState<ReactNode | null>(null);
 
@@ -11,9 +14,14 @@ export function DemoPage() {
     setContent(newContent);
   };
 
+  const sidebarProps = {
+    hasAddons: Boolean(content),
+    ...props,
+  };
+
   return (
     <div data-page="true" className={styles.page}>
-      <DemoSidebar ref={sidebarRef} addons={content} />
+      <DemoSidebar ref={sidebarRef} addons={content} {...sidebarProps} />
       <div className={styles.container}>
         <button
           type="button"

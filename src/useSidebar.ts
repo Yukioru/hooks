@@ -14,7 +14,7 @@ export interface UseSidebarOptions<
 > {
   containerRef?: RefObject<HTMLElement>;
   sidebarRef: RefObject<HTMLElement | null>;
-  breakpoints: Record<StateName, number>;
+  breakpoints: Partial<Record<StateName, number>>;
   initialOpen?: InitialOpen;
   onStateChange?: (state: StateName) => void;
   onVisibilityChange?: (visible: boolean) => void;
